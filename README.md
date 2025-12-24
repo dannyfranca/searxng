@@ -397,4 +397,6 @@ SEARXNG_PORT=9999
 
 ## 📄 License
 
-This configuration is provided as-is for personal use. SearXNG is licensed under AGPL-3.0.
+This repository is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+
+SearXNG itself is licensed under AGPL-3.0.
