@@ -1,0 +1,162 @@
+# SearXNG settings - Configured for uncensored search
+
+use_default_settings: true
+
+general:
+  debug: false
+  instance_name: "SearXNG"
+  privacypolicy_url: false
+  donation_url: false
+  contact_url: false
+  enable_metrics: false
+
+search:
+  # Completely disable safe search - no filtering
+  safe_search: 0
+  # Force safe search off (0 = off, 1 = moderate, 2 = strict)
+  default_lang: "all"
+  # Autocomplete disabled - enabling sends queries to external provider (privacy leak + latency)
+  autocomplete: ""
+  
+  # Result formats
+  formats:
+    - html
+    - json
+
+server:
+  # Secret key for cryptographic operations (image proxy, sessions)
+  # OVERRIDE: If SEARXNG_SECRET env var is set (in quadlet/docker), this is IGNORED.
+  # Only change this if you're NOT using the environment variable.
+  secret_key: "ultrasecretkey"
+  # Limiter disabled for unrestricted access
+  limiter: false
+  # Image proxy for privacy
+  image_proxy: true
+  # HTTP protocol settings
+  method: "GET"
+  
+  # Public instance settings - allows API access with secret
+  public_instance: false
+
+ui:
+  # Disable safe search toggle in UI to prevent users changing it
+  default_locale: ""
+  query_in_title: true
+  infinite_scroll: true
+  center_alignment: false
+  # Theme settings
+  default_theme: simple
+  theme_args:
+    simple_style: dark
+
+# Outgoing requests configuration
+outgoing:
+  request_timeout: 6.0
+  max_request_timeout: 15.0
+  useragent_suffix: ""
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true
+
+# Enable all engine categories for maximum search coverage
+categories_as_tabs:
+  general:
+  images:
+  videos:
+  news:
+  map:
+  music:
+  it:
+  science:
+  files:
+  social media:
+
+# Redis configuration (optional - for caching)
+redis:
+  url: false
+
+# =============================================================================
+# PLUGINS CONFIGURATION (new format)
+# =============================================================================
+# Each plugin adds specific functionality. Set active: false to disable.
+#
+# Hash plugin           - Type "hash <text>" to get MD5/SHA256 hashes
+# Self Information      - Type "my ip" to see your IP, user-agent, etc.
+# Tracker URL remover   - Strips tracking params (?utm_source, ?fbclid, etc.) from URLs
+# Ahmia blacklist       - Filters known harmful .onion sites (for Tor search results)
+# Open Access DOI rewrite - Rewrites academic paper links to open access versions
+# Hostnames plugin      - Block/prioritize specific domains (see hostnames section below)
+# Basic Calculator      - Evaluate math expressions (e.g., "2+2", "sqrt(16)")
+# Unit converter plugin - Convert units (e.g., "10 miles in km", "100 usd in eur")
+# =============================================================================
+
+plugins:
+  searx.plugins.calculator.SXNGPlugin:
+    active: true
+  searx.plugins.hash_plugin.SXNGPlugin:
+    active: true
+  searx.plugins.self_info.SXNGPlugin:
+    active: true
+  searx.plugins.tracker_url_remover.SXNGPlugin:
+    active: true
+  searx.plugins.unit_converter.SXNGPlugin:
+    active: true
+  searx.plugins.ahmia_filter.SXNGPlugin:
+    active: true
+  searx.plugins.hostnames.SXNGPlugin:
+    active: true
+  searx.plugins.oa_doi_rewrite.SXNGPlugin:
+    active: true
+  # Disabled by default:
+  searx.plugins.infinite_scroll.SXNGPlugin:
+    active: false
+  searx.plugins.tor_check.SXNGPlugin:
+    active: false
+
+# =============================================================================
+# HOSTNAMES PLUGIN CONFIGURATION
+# =============================================================================
+# This plugin allows you to:
+#   - remove: Block domains entirely (results never shown)
+#   - replace: Rewrite URLs (e.g., YouTube -> Invidious)
+#   - high_priority: Boost certain domains to top of results
+#   - low_priority: Demote certain domains in results
+#
+# All patterns use Python regex. Common pattern: '(.*\.)?example\.com$'
+# =============================================================================
+
+hostnames:
+  # Block these domains - their results will be removed
+  remove:
+    # Example: Block Facebook
+    # - '(.*\.)?facebook\.com$'
+    # Example: Block Pinterest (often low-quality results)
+    # - '(.*\.)?pinterest\.(com|co\.uk|de|fr)$'
+    []
+
+  # Replace hostnames (privacy-friendly frontends)
+  replace:
+    # Example: Redirect YouTube to Invidious
+    # '(.*\.)?youtube\.com$': 'invidious.snopyta.org'
+    # '(.*\.)?youtu\.be$': 'invidious.snopyta.org'
+    # Example: Redirect Twitter to Nitter
+    # '(.*\.)?twitter\.com$': 'nitter.net'
+    # '(.*\.)?x\.com$': 'nitter.net'
+    # Example: Redirect Reddit to Libreddit
+    # '(.*\.)?reddit\.com$': 'libreddit.de'
+    {}
+
+  # Prioritize these domains (appear higher in results)
+  high_priority:
+    # Example: Prioritize Wikipedia
+    # - '(.*\.)?wikipedia\.org$'
+    # Example: Prioritize Stack Overflow
+    # - '(.*\.)?stackoverflow\.com$'
+    []
+
+  # Demote these domains (appear lower in results)
+  low_priority:
+    # Example: Demote content farms
+    # - '(.*\.)?w3schools\.com$'
+    []
+
