@@ -1,0 +1,8 @@
+# Environment file with secrets
+.env
+
+# Runtime data
+data/
+
+# User-modified settings (keep the template)
+# searxng/settings.yml is tracked as a template
