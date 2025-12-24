@@ -1,0 +1,38 @@
+[Unit]
+Description=SearXNG Privacy-Respecting Metasearch Engine
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/searxng/searxng:latest
+ContainerName=searxng
+
+# Port mapping - change 8888 to your desired port
+PublishPort=8888:8080
+
+# Mount the settings directory (lives alongside this quadlet file)
+# User mode:   ~/.config/containers/systemd/searxng
+# System mode: /etc/containers/systemd/searxng
+Volume=./searxng:/etc/searxng:rw,Z
+
+# Environment variables
+# IMPORTANT: Replace this secret with output of: openssl rand -hex 32
+Environment=SEARXNG_SECRET=CHANGE_ME_TO_A_RANDOM_HEX_STRING_32_BYTES
+Environment=SEARXNG_BASE_URL=http://localhost:8888
+
+# Security - drop all capabilities and add only needed ones
+DropCapability=ALL
+AddCapability=CHOWN SETGID SETUID
+
+# Auto-update
+AutoUpdate=registry
+
+# Logging
+LogDriver=journald
+
+[Service]
+Restart=always
+TimeoutStartSec=300
+
+[Install]
+WantedBy=default.target
